@@ -18,6 +18,7 @@ package com.android.settings.notification;
 
 import android.content.Context;
 import android.media.AudioManager;
+import android.provider.Settings;
 import android.text.TextUtils;
 
 import com.android.settings.R;
@@ -35,7 +36,7 @@ public class NotificationVolumePreferenceController extends
     @Override
     public int getAvailabilityStatus() {
         return mContext.getResources().getBoolean(R.bool.config_show_notification_volume)
-                && !Utils.isVoiceCapable(mContext) && !mHelper.isSingleVolume()
+                && !mHelper.isSingleVolume()
                 ? AVAILABLE : UNSUPPORTED_ON_DEVICE;
     }
 
@@ -56,7 +57,27 @@ public class NotificationVolumePreferenceController extends
 
     @Override
     public int getMuteIcon() {
-        return R.drawable.ic_notifications_off_24dp;
+        if (!Utils.isVoiceCapable(mContext)) {
+            return super.getMuteIcon();
+        }
+        return com.android.internal.R.drawable.ic_audio_notification_mute_new;
     }
 
+    @Override
+    protected void updatePreferenceIcon() {
+        if (!Utils.isVoiceCapable(mContext)) {
+            super.updatePreferenceIcon();
+            return;
+        }
+        if (mPreference != null) {
+            mPreference.showIcon(mSuppressor != null
+                ? com.android.internal.R.drawable.ic_audio_notification_new
+                : mRingerMode == AudioManager.RINGER_MODE_VIBRATE
+                    ? com.android.internal.R.drawable.ic_audio_ring_notif_vibrate
+                    : com.android.internal.R.drawable.ic_audio_notification_new);
+        }
+    }
+     public VolumeSeekBarPreference getPreference() {
+        return mPreference;
+    }
 }

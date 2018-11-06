@@ -28,6 +28,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.text.TextUtils;
 
 import com.android.settings.R;
@@ -42,8 +43,8 @@ public class RingVolumePreferenceController extends VolumeSeekBarPreferenceContr
     private static final String KEY_RING_VOLUME = "ring_volume";
 
     private Vibrator mVibrator;
-    private int mRingerMode = -1;
-    private ComponentName mSuppressor;
+    protected int mRingerMode = -1;
+    protected ComponentName mSuppressor;
     private final RingReceiver mReceiver = new RingReceiver();
     private final H mHandler = new H();
 
@@ -122,7 +123,7 @@ public class RingVolumePreferenceController extends VolumeSeekBarPreferenceContr
         updatePreferenceIcon();
     }
 
-    private void updatePreferenceIcon() {
+    protected void updatePreferenceIcon() {
         if (mPreference != null) {
             if (mRingerMode == AudioManager.RINGER_MODE_VIBRATE) {
                 mMuteIcon = R.drawable.ic_volume_ringer_vibrate;
